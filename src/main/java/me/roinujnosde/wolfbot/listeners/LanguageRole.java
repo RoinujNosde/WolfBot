@@ -13,12 +13,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public class LanguageRole extends ListenerAdapter {
-
-    private final WolfBot bot;
+public class LanguageRole extends Listener {
 
     public LanguageRole(WolfBot bot) {
-        this.bot = bot;
+        super(bot);
     }
 
     @Override
@@ -58,7 +56,7 @@ public class LanguageRole extends ListenerAdapter {
         InteractionHook hook = event.getHook();
 
         String componentId = event.getComponentId();
-        String roleId = bot.getConfig().getLanguageRoles().get(componentId);
+        String roleId = config.getLanguageRoles().get(componentId);
         Role role;
 
         if (roleId == null || (role = event.getGuild().getRoleById(roleId)) == null) {

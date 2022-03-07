@@ -7,22 +7,17 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
-import net.dv8tion.jda.api.interactions.commands.CommandInteractionPayload;
 import net.dv8tion.jda.api.requests.RestAction;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
-import java.util.Objects;
 import java.util.logging.Level;
 
-public class SuggestCommand extends ListenerAdapter {
-
-    private final WolfBot bot;
+public class SuggestCommand extends Listener {
 
     public SuggestCommand(WolfBot bot) {
-        this.bot = bot;
+        super(bot);
     }
 
     @Override
@@ -36,7 +31,7 @@ public class SuggestCommand extends ListenerAdapter {
     public void onCommandAutoCompleteInteraction(@NotNull CommandAutoCompleteInteractionEvent event) {
         if ("suggest".equals(event.getName()) &&
                 event.getFocusedOption().getName().equalsIgnoreCase("project") ) {
-            event.getInteraction().replyChoiceStrings(bot.getConfig().getProjects()).queue();
+            event.getInteraction().replyChoiceStrings(config.getSuggestionProjects()).queue();
         }
     }
 
@@ -52,7 +47,7 @@ public class SuggestCommand extends ListenerAdapter {
 
         InteractionHook hook = event.getHook();
         hook.setEphemeral(true);
-        if (!bot.getConfig().isProject(project)) {
+        if (!bot.getConfig().isSuggestionsProject(project)) {
             hook.sendMessage(String.format("%s is not a valid project name!", project)).queue();
             return;
         }
@@ -61,7 +56,7 @@ public class SuggestCommand extends ListenerAdapter {
             return;
         }
 
-        TextChannel suggestionsChannel = event.getGuild().getTextChannelById(bot.getConfig().getSuggestionsChannel());
+        TextChannel suggestionsChannel = event.getGuild().getTextChannelById(config.getSuggestionsChannel());
         if (suggestionsChannel == null || !suggestionsChannel.canTalk()) {
             bot.getLogger().warning("null suggestionsChannel or the bot can't talk");
             hook.sendMessage("An error occurred while creating the suggestion!").queue();
@@ -69,11 +64,11 @@ public class SuggestCommand extends ListenerAdapter {
         }
 
         String avatar = user.getAvatarUrl() != null ? user.getAvatarUrl() : user.getDefaultAvatarUrl();
-        MessageEmbed embed = new EmbedBuilder().setTitle(bot.getConfig().getProjectFixedCase(project))
+        MessageEmbed embed = new EmbedBuilder().setTitle(config.getProjectFixedCase(project))
                 .setDescription(suggestion).setTimestamp(Instant.now()).setFooter(user.getAsTag(), avatar).build();
         suggestionsChannel.sendMessageEmbeds(embed).submit().thenCompose(message -> {
             RestAction<?> action = null;
-            for (String emote : bot.getConfig().getSuggestionEmotes()) {
+            for (String emote : config.getSuggestionEmotes()) {
                 if (action == null) {
                     action = message.addReaction(emote);
                 } else {
@@ -92,8 +87,4 @@ public class SuggestCommand extends ListenerAdapter {
 
     }
 
-    @NotNull
-    private String getOption(CommandInteractionPayload payload, String name) {
-        return Objects.requireNonNull(payload.getOption(name)).getAsString();
-    }
 }

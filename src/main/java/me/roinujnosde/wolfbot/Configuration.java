@@ -9,9 +9,11 @@ import java.util.Map;
 public class Configuration {
 
     private String token = "BOT_TOKEN";
+    private String gitbookToken = "GITBOOK_TOKEN";
     private String suggestionsChannel = "CHANNEL_ID";
     private List<String> suggestionEmotes = new ArrayList<>();
-    private List<String> projects = new ArrayList<>();
+    private List<String> suggestionProjects = new ArrayList<>();
+    private Map<String, String> wikiProjects = new HashMap<>();
     private String adminRole = "ADMIN_ROLE_ID";
     private Map<String, String> languageRoles = new HashMap<>();
 
@@ -23,12 +25,12 @@ public class Configuration {
         return suggestionsChannel;
     }
 
-    public List<String> getProjects() {
-        return projects;
+    public List<String> getSuggestionProjects() {
+        return suggestionProjects;
     }
 
-    public boolean isProject(String name) {
-        for (String p : projects) {
+    public boolean isSuggestionsProject(String name) {
+        for (String p : suggestionProjects) {
             if (p.equalsIgnoreCase(name)) {
                 return true;
             }
@@ -38,7 +40,7 @@ public class Configuration {
     }
 
     public String getProjectFixedCase(String name) {
-        for (String p : projects) {
+        for (String p : suggestionProjects) {
             if (p.equalsIgnoreCase(name)) {
                 return p;
             }
@@ -56,5 +58,13 @@ public class Configuration {
 
     public Map<String, String> getLanguageRoles() {
         return languageRoles;
+    }
+
+    public Map<String, String> getWikiProjects() {
+        return wikiProjects;
+    }
+
+    public String getGitbookToken() {
+        return gitbookToken;
     }
 }
