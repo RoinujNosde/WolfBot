@@ -2,11 +2,13 @@ package me.roinujnosde.wolfbot.listeners;
 
 import me.roinujnosde.wolfbot.WolfBot;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class ClearCommand extends Listener {
 
@@ -23,12 +25,10 @@ public class ClearCommand extends Listener {
         int count = Objects.requireNonNull(event.getOption("count")).getAsInt();
 
         event.deferReply(true).queue();
-        long messageId = event.getChannel().getLatestMessageIdLong();
-        event.getChannel().getHistoryBefore(messageId, count).queue(mh -> {
-            List<Message> messages = mh.getRetrievedHistory();
-            event.getTextChannel().deleteMessages(messages).queue();
-            event.getHook().sendMessage("Deleted the messages for you!").queue();
-        });
 
+        TextChannel textChannel = event.getTextChannel();
+        List<Message> messages = textChannel.getIterableHistory().stream().limit(count).collect(Collectors.toList());
+        textChannel.deleteMessages(messages).queue();
+        event.getHook().sendMessage("Deleted the messages for you!").queue();
     }
 }

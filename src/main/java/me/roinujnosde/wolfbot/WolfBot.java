@@ -69,7 +69,7 @@ public class WolfBot {
                 .setDefaultEnabled(false).addSubcommands(
                         new SubcommandData("clear", "Deletes messages from the channel").addOptions(
                                 new OptionData(INTEGER, "count", "The number of messages to delete", true)
-                                        .setRequiredRange(1, 100)),
+                                        .setRequiredRange(2, 100)),
                         new SubcommandData("language-message",
                                 "Creates the message for picking language roles"));
         jda.updateCommands().addCommands(wikiCommand, suggestCommand, adminCommand).queue();
