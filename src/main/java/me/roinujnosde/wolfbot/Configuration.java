@@ -29,16 +29,6 @@ public class Configuration {
         return suggestionProjects;
     }
 
-    public boolean isSuggestionsProject(String name) {
-        for (String p : suggestionProjects) {
-            if (p.equalsIgnoreCase(name)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public String getProjectFixedCase(String name) {
         for (String p : suggestionProjects) {
             if (p.equalsIgnoreCase(name)) {

@@ -4,7 +4,6 @@ import me.roinujnosde.wolfbot.WolfBot;
 import me.roinujnosde.wolfbot.models.SearchItem;
 import me.roinujnosde.wolfbot.models.SearchResult;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +18,8 @@ import java.util.logging.Level;
 
 public class WikiCommand extends Listener {
 
-    private static final String WIKI_URL = "https://wiki.roinujnosde.me/%s/%s";
+    private static final String WIKI_BASE_URL = "https://wiki.roinujnosde.me/%s";
+    private static final String WIKI_CONTENT_URL = "https://wiki.roinujnosde.me/%s/%s";
     private static final String SEARCH_URL = "https://api.gitbook.com/v1/spaces/%s/search?query=%s";
 
     public WikiCommand(WolfBot bot) {
@@ -53,10 +53,10 @@ public class WikiCommand extends Listener {
             }
             SearchItem first = result.getItems().get(0);
 
-            EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.BLUE).setTitle(first.getTitle(),
-                    getWikiUrl(project, first.getUrl()));
+            EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.YELLOW).setTitle(first.getTitle(),
+                    String.format(WIKI_BASE_URL, project));
             for (SearchItem.Section section : first.getSections()) {
-                embedBuilder.addField(section.getTitle(), getWikiUrl(project, section.getUrl()), true);
+                embedBuilder.addField(section.getTitle(), getContentUrl(project, section.getUrl()), true);
             }
             hook.sendMessageEmbeds(embedBuilder.build()).queue();
         } catch (IOException ex) {
@@ -65,15 +65,7 @@ public class WikiCommand extends Listener {
         }
     }
 
-    @Override
-    public void onCommandAutoCompleteInteraction(@NotNull CommandAutoCompleteInteractionEvent event) {
-        if (!event.getName().equalsIgnoreCase("wiki")) return;
-        if (!event.getFocusedOption().getName().equalsIgnoreCase("project")) return;
-
-        event.replyChoiceStrings(config.getWikiProjects().keySet()).queue();
-    }
-
-    private String getWikiUrl(String project, String pageUrl) {
-        return String.format(WIKI_URL, project.toLowerCase(Locale.ROOT), pageUrl);
+    private String getContentUrl(String project, String pageUrl) {
+        return String.format(WIKI_CONTENT_URL, project.toLowerCase(Locale.ROOT), pageUrl);
     }
 }

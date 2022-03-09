@@ -5,7 +5,6 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.requests.RestAction;
@@ -27,14 +26,6 @@ public class SuggestCommand extends Listener {
         }
     }
 
-    @Override
-    public void onCommandAutoCompleteInteraction(@NotNull CommandAutoCompleteInteractionEvent event) {
-        if ("suggest".equals(event.getName()) &&
-                event.getFocusedOption().getName().equalsIgnoreCase("project") ) {
-            event.getInteraction().replyChoiceStrings(config.getSuggestionProjects()).queue();
-        }
-    }
-
     private void processSuggest(SlashCommandInteractionEvent event) {
         event.deferReply(true).queue();
         if (event.getGuild() == null) {
@@ -47,10 +38,6 @@ public class SuggestCommand extends Listener {
 
         InteractionHook hook = event.getHook();
         hook.setEphemeral(true);
-        if (!bot.getConfig().isSuggestionsProject(project)) {
-            hook.sendMessage(String.format("%s is not a valid project name!", project)).queue();
-            return;
-        }
         if (suggestion.length() < 5) {
             hook.sendMessage("Your suggestion is too short! Write at least 5 words.").queue();
             return;

@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import me.roinujnosde.wolfbot.listeners.*;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
@@ -15,7 +16,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import static net.dv8tion.jda.api.interactions.commands.OptionType.INTEGER;
 import static net.dv8tion.jda.api.interactions.commands.OptionType.STRING;
@@ -58,13 +62,14 @@ public class WolfBot {
                 new ReadyListener(this));
 
         getLogger().info("Registered listeners");
-        // FIXME Autocomplete doesn't seem to restrict input
         SlashCommandData wikiCommand = Commands.slash("wiki", "Searches the wiki")
-                .addOption(STRING, "project", "The project", true, true)
-                .addOption(STRING, "keywords", "The search keywords", true);
+                .addOptions(new OptionData(STRING, "project", "The project", true)
+                                .addChoices(getChoices(config.getWikiProjects().keySet())),
+                        new OptionData(STRING, "keywords", "The search keywords", true));
         SlashCommandData suggestCommand = Commands.slash("suggest", "Creates a suggestion for one of my projects")
-                .addOption(STRING, "project", "The project name", true, true)
-                .addOption(STRING, "suggestion", "Your suggestion", true);
+                .addOptions(new OptionData(STRING, "project", "The project name", true)
+                                .addChoices(getChoices(config.getSuggestionProjects())),
+                        new OptionData(STRING, "suggestion", "Your suggestion", true));
         SlashCommandData adminCommand = Commands.slash("admin", "Admin commands")
                 .setDefaultEnabled(false).addSubcommands(
                         new SubcommandData("clear", "Deletes messages from the channel").addOptions(
@@ -93,5 +98,9 @@ public class WolfBot {
 
     public Gson getGson() {
         return gson;
+    }
+
+    private List<Command.Choice> getChoices(Collection<String> list) {
+        return list.stream().map(str -> new Command.Choice(str, str)).collect(Collectors.toList());
     }
 }
