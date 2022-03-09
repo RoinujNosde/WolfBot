@@ -39,30 +39,39 @@ public class WikiCommand extends Listener {
         InteractionHook hook = event.getHook();
 
         try {
-            URL url = new URL(String.format(SEARCH_URL, space, query));
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.setRequestProperty("Authorization", String.format("Bearer %s", config.getGitbookToken()));
-
-            InputStreamReader reader = new InputStreamReader(connection.getInputStream());
-            SearchResult result = bot.getGson().fromJson(reader, SearchResult.class);
-            reader.close();
+            SearchResult result = getSearchResult(space, query);
             if (result.getItems().isEmpty()) {
                 hook.setEphemeral(true).sendMessage("Your keywords returned 0 results!").queue();
                 return;
             }
-            SearchItem first = result.getItems().get(0);
 
-            EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.YELLOW).setTitle(first.getTitle(),
-                    String.format(WIKI_BASE_URL, project));
-            for (SearchItem.Section section : first.getSections()) {
-                embedBuilder.addField(section.getTitle(), getContentUrl(project, section.getUrl()), true);
+            EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.YELLOW)
+                    .setTitle(String.format("%s's Wiki", project), getBaseUrl(project))
+                    .setDescription("Found the following page(s) for you:");
+            for (SearchItem item : result.getItems()) {
+                embedBuilder.addField(item.getTitle(), getContentUrl(project, item.getUrl()), true);
             }
             hook.sendMessageEmbeds(embedBuilder.build()).queue();
         } catch (IOException ex) {
             hook.sendMessage("An error occurred while searching the wiki!").queue();
             bot.getLogger().log(Level.SEVERE, "Error searching wiki", ex);
         }
+    }
+
+    private String getBaseUrl(String project) {
+        return String.format(WIKI_BASE_URL, project.toLowerCase(Locale.ROOT));
+    }
+
+    private SearchResult getSearchResult(String space, String query) throws IOException {
+        URL url = new URL(String.format(SEARCH_URL, space, query));
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Authorization", String.format("Bearer %s", config.getGitbookToken()));
+
+        InputStreamReader reader = new InputStreamReader(connection.getInputStream());
+        SearchResult result = bot.getGson().fromJson(reader, SearchResult.class);
+        reader.close();
+        return result;
     }
 
     private String getContentUrl(String project, String pageUrl) {
