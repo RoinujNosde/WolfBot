@@ -11,6 +11,7 @@ public class Configuration {
     private String token = "BOT_TOKEN";
     private String gitbookToken = "GITBOOK_TOKEN";
     private String suggestionsChannel = "CHANNEL_ID";
+    private String addonsChannel = "CHANNEL_ID";
     private List<String> suggestionEmotes = new ArrayList<>();
     private List<String> suggestionProjects = new ArrayList<>();
     private Map<String, String> wikiProjects = new HashMap<>();
@@ -23,6 +24,10 @@ public class Configuration {
 
     public String getSuggestionsChannel() {
         return suggestionsChannel;
+    }
+
+    public String getAddonsChannel() {
+        return addonsChannel;
     }
 
     public List<String> getSuggestionProjects() {

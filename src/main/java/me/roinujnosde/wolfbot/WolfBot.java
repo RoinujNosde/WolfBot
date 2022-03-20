@@ -58,8 +58,7 @@ public class WolfBot {
 
     public void onEnable() {
         jda.addEventListener(new WikiCommand(this), new ClearCommand(this), new LanguageRole(this),
-                new SuggestCommand(this),
-                new ReadyListener(this));
+                new SuggestCommand(this), new AddonCommand(this), new ReadyListener(this));
 
         getLogger().info("Registered listeners");
         SlashCommandData wikiCommand = Commands.slash("wiki", "Searches the wiki")
@@ -70,6 +69,9 @@ public class WolfBot {
                 .addOptions(new OptionData(STRING, "project", "The project name", true)
                                 .addChoices(getChoices(config.getSuggestionProjects())),
                         new OptionData(STRING, "suggestion", "Your suggestion", true));
+        SlashCommandData addonCommand = Commands.slash("addon", "Posts an add-on for one of my projects")
+                .addOptions(new OptionData(INTEGER, "spigot-id", "The resource ID on Spigot", true)
+                        .setRequiredRange(1, (long) OptionData.MAX_POSITIVE_NUMBER));
         SlashCommandData adminCommand = Commands.slash("admin", "Admin commands")
                 .setDefaultEnabled(false).addSubcommands(
                         new SubcommandData("clear", "Deletes messages from the channel").addOptions(
@@ -77,7 +79,7 @@ public class WolfBot {
                                         .setRequiredRange(2, 100)),
                         new SubcommandData("language-message",
                                 "Creates the message for picking language roles"));
-        jda.updateCommands().addCommands(wikiCommand, suggestCommand, adminCommand).queue();
+        jda.updateCommands().addCommands(addonCommand, wikiCommand, suggestCommand, adminCommand).queue();
         getLogger().info("Updating commands");
     }
 

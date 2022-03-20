@@ -51,8 +51,11 @@ public class SuggestCommand extends Listener {
         }
 
         String avatar = user.getAvatarUrl() != null ? user.getAvatarUrl() : user.getDefaultAvatarUrl();
-        MessageEmbed embed = new EmbedBuilder().setTitle(config.getProjectFixedCase(project))
-                .setDescription(suggestion).setTimestamp(Instant.now()).setFooter(user.getAsTag(), avatar).build();
+        MessageEmbed embed = new EmbedBuilder()
+                .setTitle(config.getProjectFixedCase(project))
+                .setDescription(suggestion)
+                .setTimestamp(Instant.now())
+                .setFooter(user.getAsTag(), avatar).build();
         suggestionsChannel.sendMessageEmbeds(embed).submit().thenCompose(message -> {
             RestAction<?> action = null;
             for (String emote : config.getSuggestionEmotes()) {

@@ -1,8 +1,8 @@
 package me.roinujnosde.wolfbot.listeners;
 
 import me.roinujnosde.wolfbot.WolfBot;
-import me.roinujnosde.wolfbot.models.SearchItem;
-import me.roinujnosde.wolfbot.models.SearchResult;
+import me.roinujnosde.wolfbot.models.gitbook.SearchItem;
+import me.roinujnosde.wolfbot.models.gitbook.SearchResult;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
