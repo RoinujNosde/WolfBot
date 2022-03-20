@@ -130,6 +130,9 @@ public class AddonCommand extends Listener {
     }
 
     private String getUrl(Icon icon) {
+        if (icon == null) {
+            return null;
+        }
         String url = icon.getUrl();
         if (url.startsWith(SPIGOT_BASE_URL)) { // API inconsistency
             return url;
