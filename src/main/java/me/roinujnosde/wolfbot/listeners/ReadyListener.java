@@ -1,17 +1,19 @@
 package me.roinujnosde.wolfbot.listeners;
 
 import me.roinujnosde.wolfbot.WolfBot;
+import me.roinujnosde.wolfbot.tasks.UpdateAddons;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.ReadyEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.privileges.CommandPrivilege;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
 
 public class ReadyListener extends Listener {
 
@@ -36,9 +38,9 @@ public class ReadyListener extends Listener {
             if (commandId == null) return;
 
             guild.updateCommandPrivileges(Map.of(commandId, List.of(CommandPrivilege.enable(role)))).queue();
-
         });
 
+        new Timer().schedule(new UpdateAddons(bot), 0, ChronoUnit.DAYS.getDuration().toMillis());
     }
 
     @SuppressWarnings("SameParameterValue")

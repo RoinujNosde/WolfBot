@@ -1,5 +1,6 @@
 package me.roinujnosde.wolfbot.listeners;
 
+import me.roinujnosde.wolfbot.HttpHelper;
 import me.roinujnosde.wolfbot.WolfBot;
 import me.roinujnosde.wolfbot.models.gitbook.SearchItem;
 import me.roinujnosde.wolfbot.models.gitbook.SearchResult;
@@ -10,10 +11,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Level;
 
 public class WikiCommand extends Listener {
@@ -39,8 +38,8 @@ public class WikiCommand extends Listener {
         InteractionHook hook = event.getHook();
 
         try {
-            SearchResult result = getSearchResult(space, query);
-            if (result.getItems().isEmpty()) {
+            SearchResult result = HttpHelper.get(SearchResult.class, getProperties(), SEARCH_URL, space, query);
+            if (result == null || result.getItems().isEmpty()) {
                 hook.setEphemeral(true).sendMessage("Your keywords returned 0 results!").queue();
                 return;
             }
@@ -58,20 +57,13 @@ public class WikiCommand extends Listener {
         }
     }
 
-    private String getBaseUrl(String project) {
-        return String.format(WIKI_BASE_URL, project.toLowerCase(Locale.ROOT));
+    @NotNull
+    private Map<String, String> getProperties() {
+        return Map.of("Authorization", String.format("Bearer %s", config.getGitbookToken()));
     }
 
-    private SearchResult getSearchResult(String space, String query) throws IOException {
-        URL url = new URL(String.format(SEARCH_URL, space, query));
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-        connection.setRequestProperty("Authorization", String.format("Bearer %s", config.getGitbookToken()));
-
-        InputStreamReader reader = new InputStreamReader(connection.getInputStream());
-        SearchResult result = bot.getGson().fromJson(reader, SearchResult.class);
-        reader.close();
-        return result;
+    private String getBaseUrl(String project) {
+        return String.format(WIKI_BASE_URL, project.toLowerCase(Locale.ROOT));
     }
 
     private String getContentUrl(String project, String pageUrl) {

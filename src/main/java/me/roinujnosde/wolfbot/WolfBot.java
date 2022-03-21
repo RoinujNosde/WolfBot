@@ -98,8 +98,8 @@ public class WolfBot {
         writer.close();
     }
 
-    public Gson getGson() {
-        return gson;
+    public JDA getJda() {
+        return jda;
     }
 
     private List<Command.Choice> getChoices(Collection<String> list) {
