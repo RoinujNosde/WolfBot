@@ -28,7 +28,7 @@ public class WolfBot {
 
     private JDA jda;
     private final Configuration config;
-    private final Logger logger = Logger.getLogger("WolfBot");
+    private static final Logger LOGGER = Logger.getLogger("WolfBot");
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     public WolfBot() throws IOException {
@@ -45,6 +45,7 @@ public class WolfBot {
     }
 
     public static void main(String... args) throws IOException, LoginException {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> LOGGER.info("Shutting down WolfBot...")));
         WolfBot bot = new WolfBot();
         JDA jda = JDABuilder.createDefault(bot.config.getToken()).build();
 
@@ -88,7 +89,7 @@ public class WolfBot {
     }
 
     public Logger getLogger() {
-        return logger;
+        return LOGGER;
     }
 
     public void saveConfig() throws IOException {
