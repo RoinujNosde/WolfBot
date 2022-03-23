@@ -43,7 +43,7 @@ public class WikiCommand extends Listener {
         try {
             SearchResult result = HttpHelper.get(SearchResult.class, getProperties(), SEARCH_URL, space, query);
             if (result == null || result.getItems().isEmpty()) {
-                hook.setEphemeral(true).sendMessage("Your keywords returned 0 results!").queue();
+                hook.sendMessage("Your keywords returned 0 results!").setEphemeral(true).queue();
                 return;
             }
 
@@ -55,6 +55,10 @@ public class WikiCommand extends Listener {
                     continue;
                 }
                 embedBuilder.addField(item.getTitle(), getContentUrl(project, item.getUrl()), true);
+            }
+            if (embedBuilder.getFields().isEmpty()) {
+                hook.sendMessage("Make sure to pick one of the suggested titles!").setEphemeral(true).queue();
+                return;
             }
             hook.sendMessageEmbeds(embedBuilder.build()).queue();
         } catch (IOException ex) {
