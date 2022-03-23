@@ -5,8 +5,10 @@ import me.roinujnosde.wolfbot.WolfBot;
 import me.roinujnosde.wolfbot.models.gitbook.SearchItem;
 import me.roinujnosde.wolfbot.models.gitbook.SearchResult;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -14,6 +16,7 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class WikiCommand extends Listener {
 
@@ -33,7 +36,7 @@ public class WikiCommand extends Listener {
         event.deferReply(false).queue();
         String project = getOption(event.getInteraction(), "project");
         String space = config.getWikiProjects().get(project);
-        String query = getOption(event.getInteraction(), "keywords");
+        String query = getOption(event.getInteraction(), "keywords").trim();
 
         InteractionHook hook = event.getHook();
 
@@ -48,12 +51,42 @@ public class WikiCommand extends Listener {
                     .setTitle(String.format("%s's Wiki", project), getBaseUrl(project))
                     .setDescription("Found the following page(s) for you:");
             for (SearchItem item : result.getItems()) {
+                if (!item.getTitle().equalsIgnoreCase(query)) {
+                    continue;
+                }
                 embedBuilder.addField(item.getTitle(), getContentUrl(project, item.getUrl()), true);
             }
             hook.sendMessageEmbeds(embedBuilder.build()).queue();
         } catch (IOException ex) {
             hook.sendMessage("An error occurred while searching the wiki!").queue();
             bot.getLogger().log(Level.SEVERE, "Error searching wiki", ex);
+        }
+    }
+
+    @Override
+    public void onCommandAutoCompleteInteraction(@NotNull CommandAutoCompleteInteractionEvent event) {
+        if (event.getGuild() == null) return;
+        if (!"wiki".equalsIgnoreCase(event.getName())) return;
+        if (!"keywords".equalsIgnoreCase(event.getFocusedOption().getName())) return;
+
+        OptionMapping projectOption = event.getOption("project");
+        if (projectOption == null) {
+            event.replyChoiceStrings().queue();
+            return;
+        }
+        String project = projectOption.getAsString();
+        String space = config.getWikiProjects().get(project);
+        String value = event.getFocusedOption().getValue();
+
+        try {
+            SearchResult searchResult = HttpHelper.get(SearchResult.class, getProperties(), SEARCH_URL, space, value);
+            if (searchResult == null || searchResult.getItems().isEmpty()) {
+                event.replyChoiceStrings().queue();
+                return;
+            }
+            event.replyChoiceStrings(searchResult.getItems().stream().map(SearchItem::getTitle).collect(Collectors.toSet())).queue();
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 

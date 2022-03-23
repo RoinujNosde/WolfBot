@@ -65,7 +65,7 @@ public class WolfBot {
         SlashCommandData wikiCommand = Commands.slash("wiki", "Searches the wiki")
                 .addOptions(new OptionData(STRING, "project", "The project", true)
                                 .addChoices(getChoices(config.getWikiProjects().keySet())),
-                        new OptionData(STRING, "keywords", "The search keywords", true));
+                        new OptionData(STRING, "keywords", "The search keywords", true, true));
         SlashCommandData suggestCommand = Commands.slash("suggest", "Creates a suggestion for one of my projects")
                 .addOptions(new OptionData(STRING, "project", "The project name", true)
                                 .addChoices(getChoices(config.getSuggestionProjects())),
