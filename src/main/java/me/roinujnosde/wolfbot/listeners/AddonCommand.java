@@ -94,11 +94,6 @@ public class AddonCommand extends Listener {
         return Button.link(getDownloadUrl(resource), label);
     }
 
-    @Override
-    public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
-        System.out.println(event.getButton());
-    }
-
     private String getDownloadUrl(Resource resource) {
         if (resource.isPremium()) {
             return String.format(SPIGOT_PURCHASE_URL, resource.getId());
