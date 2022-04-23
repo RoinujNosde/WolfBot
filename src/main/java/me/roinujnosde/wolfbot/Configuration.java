@@ -12,6 +12,7 @@ public class Configuration {
     private String gitbookToken = "GITBOOK_TOKEN";
     private String suggestionsChannel = "CHANNEL_ID";
     private String addonsChannel = "CHANNEL_ID";
+    private String logsChannel = "CHANNEL_ID";
     private List<String> suggestionEmotes = new ArrayList<>();
     private List<String> suggestionProjects = new ArrayList<>();
     private Map<String, String> wikiProjects = new HashMap<>();
@@ -28,6 +29,10 @@ public class Configuration {
 
     public String getAddonsChannel() {
         return addonsChannel;
+    }
+
+    public String getLogsChannel() {
+        return logsChannel;
     }
 
     public List<String> getSuggestionProjects() {

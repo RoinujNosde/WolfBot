@@ -21,8 +21,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import static net.dv8tion.jda.api.interactions.commands.OptionType.INTEGER;
-import static net.dv8tion.jda.api.interactions.commands.OptionType.STRING;
+import static net.dv8tion.jda.api.interactions.commands.OptionType.*;
 
 public class WolfBot {
 
@@ -59,9 +58,12 @@ public class WolfBot {
 
     public void onEnable() {
         jda.addEventListener(new WikiCommand(this), new ClearCommand(this), new LanguageRole(this),
-                new SuggestCommand(this), new AddonCommand(this), new ReadyListener(this));
+                new SuggestCommand(this), new AddonCommand(this), new ReadyListener(this),
+                new LogCommand(this));
 
         getLogger().info("Registered listeners");
+        SlashCommandData logCommand = Commands.slash("log", "Sends a log file privately")
+                .addOption(ATTACHMENT, "attachment", "The log file to be examined", true);
         SlashCommandData wikiCommand = Commands.slash("wiki", "Searches the wiki")
                 .addOptions(new OptionData(STRING, "project", "The project", true)
                                 .addChoices(getChoices(config.getWikiProjects().keySet())),
@@ -80,7 +82,7 @@ public class WolfBot {
                                         .setRequiredRange(2, 100)),
                         new SubcommandData("language-message",
                                 "Creates the message for picking language roles"));
-        jda.updateCommands().addCommands(addonCommand, wikiCommand, suggestCommand, adminCommand).queue();
+        jda.updateCommands().addCommands(logCommand, addonCommand, wikiCommand, suggestCommand, adminCommand).queue();
         getLogger().info("Updating commands");
     }
 
