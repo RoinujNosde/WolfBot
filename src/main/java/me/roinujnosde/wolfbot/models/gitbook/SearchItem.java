@@ -5,12 +5,12 @@ import java.util.List;
 public class SearchItem {
 
     private final String title;
-    private final String url;
+    private final String path;
     private final List<Section> sections;
 
-    public SearchItem(String title, String url, List<Section> sections) {
+    public SearchItem(String title, String path, List<Section> sections) {
         this.title = title;
-        this.url = url;
+        this.path = path;
         this.sections = sections;
     }
 
@@ -18,8 +18,8 @@ public class SearchItem {
         return title;
     }
 
-    public String getUrl() {
-        return url;
+    public String getPath() {
+        return path;
     }
 
     public List<Section> getSections() {
@@ -30,12 +30,12 @@ public class SearchItem {
 
         private final String title;
         private final String body;
-        private final String url;
+        private final String path;
 
-        public Section(String title, String body, String url) {
+        public Section(String title, String body, String path) {
             this.title = title;
             this.body = body;
-            this.url = url;
+            this.path = path;
         }
 
         public String getTitle() {
@@ -46,8 +46,8 @@ public class SearchItem {
             return body;
         }
 
-        public String getUrl() {
-            return url;
+        public String getPath() {
+            return path;
         }
     }
 }

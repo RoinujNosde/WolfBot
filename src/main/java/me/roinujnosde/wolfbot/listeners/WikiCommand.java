@@ -54,7 +54,7 @@ public class WikiCommand extends Listener {
                 if (!item.getTitle().equalsIgnoreCase(query)) {
                     continue;
                 }
-                embedBuilder.addField(item.getTitle(), getContentUrl(project, item.getUrl()), true);
+                embedBuilder.addField(item.getTitle(), getContentUrl(project, item.getPath()), true);
             }
             if (embedBuilder.getFields().isEmpty()) {
                 hook.sendMessage("Make sure to pick one of the suggested titles!").setEphemeral(true).queue();
