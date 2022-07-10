@@ -74,13 +74,14 @@ public class WikiCommand extends Listener {
         if (!"keywords".equalsIgnoreCase(event.getFocusedOption().getName())) return;
 
         OptionMapping projectOption = event.getOption("project");
-        if (projectOption == null) {
+        String value = event.getFocusedOption().getValue();
+
+        if (projectOption == null || value.isEmpty()) {
             event.replyChoiceStrings().queue();
             return;
         }
         String project = projectOption.getAsString();
         String space = config.getWikiProjects().get(project);
-        String value = event.getFocusedOption().getValue();
 
         try {
             SearchResult searchResult = HttpHelper.get(SearchResult.class, getProperties(), SEARCH_URL, space, value);
