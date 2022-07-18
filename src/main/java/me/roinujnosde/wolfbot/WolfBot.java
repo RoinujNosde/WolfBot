@@ -2,7 +2,9 @@ package me.roinujnosde.wolfbot;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.sun.net.httpserver.HttpServer;
 import me.roinujnosde.wolfbot.listeners.*;
+import me.roinujnosde.wolfbot.server.PingHandler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.interactions.commands.Command;
@@ -16,6 +18,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
@@ -49,6 +52,13 @@ public class WolfBot {
         JDA jda = JDABuilder.createDefault(bot.config.getToken()).build();
 
         bot.setJda(jda);
+        try {
+            HttpServer server = HttpServer.create(new InetSocketAddress(9653), 0);
+            server.createContext("/", new PingHandler());
+            server.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setJda(JDA jda) {
