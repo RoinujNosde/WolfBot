@@ -59,7 +59,7 @@ public class WolfBot {
     public void onEnable() {
         jda.addEventListener(new WikiCommand(this), new ClearCommand(this), new LanguageRole(this),
                 new SuggestCommand(this), new AddonCommand(this), new ReadyListener(this),
-                new LogCommand(this));
+                new LogCommand(this), new NoBotSpam(this));
 
         getLogger().info("Registered listeners");
         SlashCommandData logCommand = Commands.slash("log", "Sends a log file privately")
