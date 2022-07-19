@@ -1,8 +1,8 @@
 package me.roinujnosde.wolfbot.listeners;
 
 import me.roinujnosde.wolfbot.WolfBot;
+import net.dv8tion.jda.api.entities.GuildMessageChannel;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,9 +26,9 @@ public class ClearCommand extends Listener {
 
         event.deferReply(true).queue();
 
-        TextChannel textChannel = event.getTextChannel();
-        List<Message> messages = textChannel.getIterableHistory().stream().limit(count).collect(Collectors.toList());
-        textChannel.deleteMessages(messages).queue();
+        GuildMessageChannel guildChannel = event.getGuildChannel();
+        List<Message> messages = guildChannel.getIterableHistory().stream().limit(count).collect(Collectors.toList());
+        guildChannel.deleteMessages(messages).queue();
         event.getHook().sendMessage("Deleted the messages for you!").queue();
     }
 }

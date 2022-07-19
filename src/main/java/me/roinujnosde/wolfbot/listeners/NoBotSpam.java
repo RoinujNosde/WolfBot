@@ -16,11 +16,10 @@ public class NoBotSpam extends Listener {
         if (!event.isFromGuild()) {
             return;
         }
-        System.out.println(event.getMessage());
+
         for (MessageEmbed embed : event.getMessage().getEmbeds()) {
-            System.out.println(embed);
             String title = embed.getTitle();
-            if (title != null && title.contains("release-please--branches--")) {
+            if (title != null && title.contains("release\\-please\\-\\-branches\\-\\-")) {
                 event.getMessage().delete().queue();
                 return;
             }

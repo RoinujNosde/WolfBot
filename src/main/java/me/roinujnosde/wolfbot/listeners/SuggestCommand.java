@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
@@ -71,10 +72,11 @@ public class SuggestCommand extends Listener {
         suggestionsChannel.sendMessageEmbeds(embed).submit().thenCompose(message -> {
             RestAction<?> action = null;
             for (String emote : config.getSuggestionEmotes()) {
+                Emoji emoji = Emoji.fromFormatted(emote);
                 if (action == null) {
-                    action = message.addReaction(emote);
+                    action = message.addReaction(emoji);
                 } else {
-                   action = action.and(message.addReaction(emote));
+                   action = action.and(message.addReaction(emoji));
                 }
             }
             //noinspection ConstantConditions

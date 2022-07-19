@@ -7,11 +7,13 @@ import me.roinujnosde.wolfbot.listeners.*;
 import me.roinujnosde.wolfbot.server.PingHandler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
@@ -24,6 +26,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import static net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions.enabledFor;
 import static net.dv8tion.jda.api.interactions.commands.OptionType.*;
 
 public class WolfBot {
@@ -49,7 +52,8 @@ public class WolfBot {
     public static void main(String... args) throws IOException, LoginException {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> LOGGER.info("Shutting down WolfBot...")));
         WolfBot bot = new WolfBot();
-        JDA jda = JDABuilder.createDefault(bot.config.getToken()).build();
+        JDA jda = JDABuilder.createDefault(bot.config.getToken(), GatewayIntent.GUILD_MESSAGES,
+                GatewayIntent.MESSAGE_CONTENT).build();
 
         bot.setJda(jda);
         try {
@@ -86,7 +90,7 @@ public class WolfBot {
                 .addOptions(new OptionData(INTEGER, "spigot-id", "The resource ID on Spigot", true)
                         .setRequiredRange(1, (long) OptionData.MAX_POSITIVE_NUMBER));
         SlashCommandData adminCommand = Commands.slash("admin", "Admin commands")
-                .setDefaultEnabled(false).addSubcommands(
+                .setDefaultPermissions(enabledFor(Permission.MANAGE_SERVER)).addSubcommands(
                         new SubcommandData("clear", "Deletes messages from the channel").addOptions(
                                 new OptionData(INTEGER, "count", "The number of messages to delete", true)
                                         .setRequiredRange(2, 100)),
