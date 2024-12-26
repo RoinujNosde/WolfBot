@@ -2,9 +2,10 @@ package me.roinujnosde.wolfbot.listeners;
 
 import me.roinujnosde.wolfbot.WolfBot;
 import net.dv8tion.jda.api.entities.Message.Attachment;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
+import net.dv8tion.jda.api.utils.FileUpload;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -37,8 +38,9 @@ public class LogCommand extends Listener {
         Attachment attachment = requireNonNull(event.getOption("attachment")).getAsAttachment();
 
         try {
-            File file = attachment.downloadToFile().get();
-            logsChannel.sendFile(file).content(format("File sent by %s on channel %s", event.getUser().getAsMention(),
+            File file = new File(attachment.getFileName());
+            attachment.getProxy().downloadToFile(file).get();
+            logsChannel.sendFiles(FileUpload.fromData(file)).setContent(format("File sent by %s on channel %s", event.getUser().getAsMention(),
                     event.getChannel().getAsMention())).submit().thenRun(() -> {
                 try {
                     Files.delete(file.toPath());

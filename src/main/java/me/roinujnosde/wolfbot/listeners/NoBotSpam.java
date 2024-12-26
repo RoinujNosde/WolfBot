@@ -19,7 +19,7 @@ public class NoBotSpam extends Listener {
 
         for (MessageEmbed embed : event.getMessage().getEmbeds()) {
             String title = embed.getTitle();
-            if (title != null && title.contains("release\\-please\\-\\-branches\\-\\-")) {
+            if (title != null && title.contains("was force-pushed to")) {
                 event.getMessage().delete().queue();
                 return;
             }

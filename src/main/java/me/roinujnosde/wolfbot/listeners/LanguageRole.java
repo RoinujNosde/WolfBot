@@ -3,14 +3,13 @@ package me.roinujnosde.wolfbot.listeners;
 import me.roinujnosde.wolfbot.WolfBot;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,11 +43,12 @@ public class LanguageRole extends Listener {
                 .setDescription("Click on the buttons below to toggle your language roles!").build();
 
         hook.sendMessage("Creating your message...").queue();
-        channel.sendMessageEmbeds(embed).setActionRows(ActionRow.of(Button.primary("portuguese", "Português")
-                .withEmoji(Emoji.fromUnicode("U+1F1E7U+1F1F7")), Button.primary("russian", "Pусский")
-                .withEmoji(Emoji.fromUnicode("U+1F1F7U+1F1FA")), Button.primary("turkish", "Türkçe")
-                .withEmoji(Emoji.fromUnicode("U+1F1F9U+1F1F7")))
-        ).queue();
+        channel.sendMessageEmbeds(embed)
+                .setActionRow((Button.primary("portuguese", "Português")
+                        .withEmoji(Emoji.fromUnicode("U+1F1E7U+1F1F7"))), Button.primary("russian", "Pусский")
+                        .withEmoji(Emoji.fromUnicode("U+1F1F7U+1F1FA")), Button.primary("turkish", "Türkçe")
+                        .withEmoji(Emoji.fromUnicode("U+1F1F9U+1F1F7"))
+                ).queue();
     }
 
     @Override

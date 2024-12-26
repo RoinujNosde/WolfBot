@@ -6,7 +6,7 @@ import me.roinujnosde.wolfbot.listeners.AddonCommand;
 import me.roinujnosde.wolfbot.models.spiget.Author;
 import me.roinujnosde.wolfbot.models.spiget.Resource;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 import java.io.IOException;

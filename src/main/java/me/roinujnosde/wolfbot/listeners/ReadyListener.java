@@ -3,7 +3,7 @@ package me.roinujnosde.wolfbot.listeners;
 import me.roinujnosde.wolfbot.WolfBot;
 import me.roinujnosde.wolfbot.tasks.UpdateAddons;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.events.ReadyEvent;
+import net.dv8tion.jda.api.events.session.ReadyEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.temporal.ChronoUnit;
